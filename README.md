@@ -27,3 +27,10 @@ Provide step-by-step instructions on how to install your project.
 
 ```bash
 npm install
+```
+and then in terminal type
+```bash
+npm run start
+```
+
+it should start the program
