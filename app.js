@@ -9,9 +9,39 @@ const prisma = new PrismaClient();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.set('view engine', 'ejs');
 
-app.get("/", (req, res) => {
-  res.send("halo")
+app.get("/", async (req, res) => {
+  try {
+    const articlesPublish = await prisma.posts.findMany({
+      where: {
+        status: "publish"
+      },
+    });
+    const articlesDraft = await prisma.posts.findMany({
+      where: {
+        status: "draft"
+      },
+    });
+    const articlesThrash = await prisma.posts.findMany({
+      where: {
+        status: "thrash"
+      },
+    });
+    if (!articlesPublish) {
+      return res.status(404).json({ message: 'Article publish not found' });
+    }
+    if (!articlesDraft) {
+      return res.status(404).json({ message: 'Article draft not found' });
+    }
+    if (!articlesThrash) {
+      return res.status(404).json({ message: 'Article thrash not found' });
+    }
+    res.render("index", {articlesPublish, articlesDraft, articlesThrash})
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 })
 
 // Endpoint 1: Membuat article baru
@@ -59,7 +89,7 @@ app.get('/article/:id', async (req, res) => {
       id: parseInt(id),
     },
   })
-    res.json(article);
+    res.render("edit", {article});
     if (!article) {
       return res.status(404).json({ message: 'Article not found' });
     }
@@ -70,7 +100,7 @@ app.get('/article/:id', async (req, res) => {
 });
 
 // Endpoint 4: Merubah data article dengan id yang di-request
-app.put('/article/:id', validateArticleData, async (req, res) => {
+app.post('/article/:id', validateArticleData, async (req, res) => {
   try {
     const { id } = req.params;
     const { title, content, category, status } = req.body;
@@ -82,10 +112,10 @@ app.put('/article/:id', validateArticleData, async (req, res) => {
         title, content, category, status
       }
     })
+    res.redirect("/")
     if (!article) {
       return res.status(404).json({ message: 'Article not found' });
     }
-  res.json({status: "Update successful", article});
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
@@ -94,19 +124,23 @@ app.put('/article/:id', validateArticleData, async (req, res) => {
 
 // Endpoint 5: Menghapus data article dengan id yang di request
 app.delete('/article/:id', async (req, res) => {
+  const status = "thrash"
   try {
     const { id } = req.params;
-    const deletedArticle = await prisma.posts.delete({
+    const article = await prisma.posts.update({
       where: {
         id: parseInt(id),
       },
-    });
+      data: {
+        status
+      }
+    })
 
     if (!deletedArticle) {
       return res.status(404).json({ message: 'Article not found' });
     }
 
-    res.json({ message: 'Article deleted' });
+    res.json({ message: 'Article move to thrash' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
