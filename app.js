@@ -73,10 +73,24 @@ app.get("/new-post", (req, res) => {
 app.get('/article/:limit/:offset', async (req, res) => {
   try {
     const { limit, offset } = req.params;
+    const limitNum = parseInt(limit);
+    const offsetNum = parseInt(offset);
     const publishedArticles = await prisma.posts.findMany({
+      where: {
+        status: "publish"
+      },
       skip: parseInt(offset),
       take: parseInt(limit),
     })
+    const prevPage = offsetNum - limitNum >= 0 ? offsetNum - limitNum : null;
+    const nextPage = offsetNum + limitNum <= publishedArticles.length? offsetNum + limitNum : null;
+    res.render('preview', {
+      publishedArticles,
+      limit: limitNum,
+      prevPage,
+      nextPage,
+  });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
