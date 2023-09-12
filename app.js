@@ -58,22 +58,25 @@ app.post('/article', validateArticleData, async (req, res) => {
         updated_date: new Date()
       },
     });
-    res.status(201).json(newArticle);
+    res.redirect("/")
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
 
+app.get("/new-post", (req, res) => {
+  res.render("addNew")
+}
+)
 // Endpoint 2: Menampilkan seluruh article dengan paging
 app.get('/article/:limit/:offset', async (req, res) => {
   try {
     const { limit, offset } = req.params;
-    const paginatedArticles = await prisma.posts.findMany({
+    const publishedArticles = await prisma.posts.findMany({
       skip: parseInt(offset),
       take: parseInt(limit),
     })
-    res.json(paginatedArticles);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
@@ -136,11 +139,7 @@ app.delete('/article/:id', async (req, res) => {
       }
     })
 
-    if (!deletedArticle) {
-      return res.status(404).json({ message: 'Article not found' });
-    }
-
-    res.json({ message: 'Article move to thrash' });
+    res.redirect("/", { message: 'Article move to thrash' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
