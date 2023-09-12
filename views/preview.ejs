@@ -15,7 +15,9 @@
             <!-- Display other article details as needed -->
         <% }) %>
     </ul>
+  
 
+    
     <!-- Pagination Controls -->
     <div class="pagination">
         <% if (prevPage !== null) { %>
@@ -26,5 +28,6 @@
             <a href="/article/<%= limit %>/<%= nextPage %>">Next</a>
         <% } %>
     </div>
+    <a href="/">back to home</a>
 </body>
 </html>
