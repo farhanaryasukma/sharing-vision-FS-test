@@ -1,6 +1,8 @@
 # Node.js Express Project
 
-This is a basic Node.js project template with Express. It provides a simple starting point for building web applications with Node.js.
+This is a project for FS Engineer Test for Sharing Vision Indonesia. This project is build upon MVC architecture with Express js and EJS as its Template Engine.
+
+this is a project to create a post with 3 tabs based on its status (publish, draft, and trash). user can edit each post and move the post to each status accordingly. Also create pagination solution for seeing published posts.
 
 ## Prerequisites
 
@@ -16,7 +18,7 @@ To get started with this project, follow these steps:
 1. Clone this repository to your local machine:
 
    ```bash
-   git clone https://github.com/your-username/node-express-project.git
+   git clone https://github.com/farhanaryasukma/sharing-vision-FS-test.git
     ```
 
 Navigate to the project directory:
