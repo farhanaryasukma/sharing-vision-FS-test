@@ -9,12 +9,13 @@
     <h1>Article Preview (Published)</h1>
 
     <!-- Display the list of published articles -->
-    <ul>
         <% publishedArticles.forEach(article => { %>
-            <li><%= article.title %></li>
+            <h3><%= article.title %></h3>
+            <p><%= article.content %></p>
+            <p style="font-weight: bold;"><%= article.category %></p>
+            <hr>
             <!-- Display other article details as needed -->
         <% }) %>
-    </ul>
 
     <!-- Pagination Controls -->
     <div class="pagination">
